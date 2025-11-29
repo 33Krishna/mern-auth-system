@@ -18,6 +18,6 @@ export const getUserData = async (req, res) => {
             }
         })
     } catch (error) {
-        return res.status(500).json({ success: true, message: error.message })
+        return res.status(500).json({ success: false, message: error.message })
     }
 }
