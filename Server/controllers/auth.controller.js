@@ -2,6 +2,7 @@ import userModel from "../models/userModel.js"
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import transporter from "../config/nodemailer.js"
+import { EMAIL_VERIFY_TEMPLATE, PASSWORD_RESET_TEMPLATE } from "../config/emailTemplates.js"
 
 export const register = async (req, res) => {
     const { name, email, password } = req.body
@@ -46,7 +47,7 @@ export const register = async (req, res) => {
             message: error.message
         })
     }
-}
+};
 
 export const login = async (req, res) => {
     const { email, password } = req.body;
@@ -80,7 +81,7 @@ export const login = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message })
     }
-}
+};
 
 export const logout = async (req, res) => {
     try {
@@ -94,7 +95,7 @@ export const logout = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message})
     }
-}
+};
 
 // Send verification OTP to the user's Email
 export const sendVerifyOtp = async (req, res) => {
@@ -118,7 +119,8 @@ export const sendVerifyOtp = async (req, res) => {
             from: process.env.SENDER_EMAIL,
             to: user.email,
             subject: 'Account verification OTP',
-            text: `Your OTP is ${otp}. Verify your account using this OTP.`
+            // text: `Your OTP is ${otp}. Verify your account using this OTP.`,
+            html: EMAIL_VERIFY_TEMPLATE.replace("{{otp}}", otp).replace("{{email}}", user.email)
         };
 
         await transporter.sendMail(mailOption);
@@ -213,7 +215,8 @@ export const sendResetOtp = async (req, res) => {
             from: process.env.SENDER_EMAIL,
             to: user.email,
             subject: 'Password Reset OTP',
-            text: `Your OTP for resetting your password is ${otp}. It expires in 15 minutes.`
+            // text: `Your OTP for resetting your password is ${otp}. It expires in 15 minutes.`,
+            html: PASSWORD_RESET_TEMPLATE.replace("{{otp}}", otp).replace("{{email}}", user.email)
         }
         await transporter.sendMail(mailOption);
 
@@ -221,7 +224,7 @@ export const sendResetOtp = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message })
     }
-}
+};
 
 // Reset user password
 export const resetPassword = async (req, res) => {
@@ -261,4 +264,4 @@ export const resetPassword = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message })
     }
-}
+};
