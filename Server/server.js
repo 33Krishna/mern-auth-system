@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser'
 import connectDB from './config/db.js'
 import authRouter from './routes/auth.routes.js'
 import userRouter from './routes/user.routes.js'
+import './config/passport.js'
 
 const app = express()
 const port = process.env.PORT || 4000

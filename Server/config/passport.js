@@ -9,13 +9,13 @@ passport.use(new GoogleStrategy({
   },
   async (accessToken, refreshToken, profile, cb) => {
     try {
-        let user = User.findOneAndUpdate({ googleId: profile.id });
+        let user = User.findOne({ googleId: profile.id });
         
         if(!user) {
             user = await User.create({
                 googleId: profile.id,
                 username: profile.displayName,
-                email: profile.email[0].value,
+                email: profile.emails[0].value,
                 avatar: profile.photos[0].value
             })
         }
