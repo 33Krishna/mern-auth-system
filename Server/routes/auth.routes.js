@@ -16,7 +16,7 @@ authRouter.post('/send-reset-otp', sendResetOtp)
 authRouter.post('/reset-password', resetPassword)
 
 // 1) Start Google OAuth flow
-router.get(
+authRouter.get(
     "/google",
     passport.authenticate("google", {
       session: false,
@@ -26,7 +26,7 @@ router.get(
   );
 
 // 2) Callback
-router.get("/google/callback", (req, res, next) => {
+authRouter.get("/google/callback", (req, res, next) => {
     passport.authenticate("google", { session: false }, (err, user) => {
       if (err || !user) {
         console.error("Google OAuth failed:", err);

@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { assets } from '../assets/assets'
 import { useNavigate } from 'react-router-dom'
 import { useContext } from 'react'
 import { AppContext } from '../context/AppContext'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import GoogleLoginButton from '../components/GoogleLoginButton'
 
 const Login = () => {
   const [state, setState] = useState('Sign Up')
@@ -46,6 +47,20 @@ const Login = () => {
       toast.error(error.response?.data?.message || error.message)
     }
   }
+
+  // for google auth
+  useEffect(() => {
+    // on redirect back from Google
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("googleAuth") === "success") {
+      // refresh auth state/user
+      getUserData();
+      // clean URL (optional)
+      window.history.replaceState({}, document.title, "/");
+      navigate("/", { replace: true });
+      toast.success("Logged in with Google");
+    }
+  }, [])
 
   return (
     <div className='flex items-center justify-center min-h-screen px-6 sm:px-0 bg-linear-to-br from-blue-200 to-purple-400'>
@@ -103,8 +118,12 @@ const Login = () => {
               <span onClick={() => setState('Sign Up')}  className='text-blue-400 cursor-pointer underline'>Sign Up </span>
             </p>
           )}
+          
         </form>
-
+        
+        <div className='mt-4'>
+          <GoogleLoginButton />
+        </div>
       </div>
     </div>
   )
